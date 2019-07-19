@@ -42,7 +42,8 @@ func (e *Emulator) hooks() {
 	}, 1, 0)
 	e.unicorn.HookAdd(unicorn.HOOK_CODE, func(uc unicorn.Unicorn, addr uint64, size uint32) {
 		bytes, _ := uc.MemRead(addr, uint64(size))
-		e.capstone.Disassemble(bytes, addr, uint64(size))
+		val, _ := uc.RegRead(unicorn.X86_REG_RAX)
+		e.capstone.Disassemble(bytes, addr, uint64(size), val)
 	}, 1, 0)
 }
 
@@ -70,7 +71,7 @@ func (e *Emulator) GetBRK() uint64 {
 func (e *Emulator) SetBRK(brk uint64) uint64 {
 	// Do allocation stuff here
 	e.brk = brk
-	return brk
+	return e.brk
 }
 
 // NewEmulator - Create a new instance of the emulator

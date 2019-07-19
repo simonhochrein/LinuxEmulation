@@ -3,6 +3,7 @@ package main
 import (
 	linuxemulation "LinuxEmulation"
 	"debug/elf"
+	"os"
 )
 
 // const (
@@ -136,7 +137,10 @@ func main() {
 	// }
 
 	emu := linuxemulation.NewEmulator(nativeInet{}, nativeFS{})
-
-	file, _ := elf.Open("./a.out")
+	if len(os.Args) < 2 {
+		print("Usage: ./start.sh [program]\n")
+		os.Exit(1)
+	}
+	file, _ := elf.Open(os.Args[1])
 	emu.Run(file)
 }
